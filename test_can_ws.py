@@ -67,10 +67,11 @@ if __name__ == "__main__":
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     task = loop.create_task(main())
+    loop.add_signal_handler(signal.SIGINT,  task.cancel)
     loop.add_signal_handler(signal.SIGTERM, task.cancel)
     try:
         loop.run_until_complete(task)
-    except (KeyboardInterrupt, asyncio.CancelledError, SystemExit):
+    except (asyncio.CancelledError, SystemExit):
         pass
     finally:
         loop.close()
