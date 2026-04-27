@@ -79,9 +79,7 @@ pip install python-can websockets
 
 ```bash
 python3 test_can_serial.py [port]
-python3 test_can_serial.py /dev/cu.usbmodem101           # run all tests
-python3 test_can_serial.py /dev/cu.usbmodem101 --status  # print bus state
-python3 test_can_serial.py /dev/cu.usbmodem101 --scan    # scan baud rates + IDs
+python3 test_can_serial.py /dev/cu.usbmodem101
 ```
 
 Default port: `/dev/cu.usbmodem101`
@@ -95,6 +93,26 @@ python3 test_can_ws.py 192.168.1.50   # by IP
 ```
 
 Both scripts send a **motor disable command on exit**, including on Ctrl-C and SIGTERM.
+
+---
+
+## Manual use via Serial monitor
+
+You can drive the gateway directly by typing SLCAN commands into any serial terminal (Arduino Serial Monitor, `screen`, `minicom`, etc.) at **115200 baud with line endings set to CR or NL+CR**.
+
+Quick start sequence:
+
+```
+S8       → set 1 Mbps
+O        → open channel
+t0013FFFFFFFFFFFFFFFF FC    → enable motor (ID 0x001, 8 bytes)
+t0013FFFFFFFFFFFFFFFF FD    → disable motor
+C        → close channel
+```
+
+The device responds with `\r` (CR) for success and `\a` (BEL) for errors. Received CAN frames are printed automatically as `t<ID><N><data>\r`.
+
+> **Arduino Serial Monitor note:** set the line ending dropdown to **"Carriage Return"** (CR only). The "Both NL & CR" option works too; "Newline only" does not.
 
 ---
 
