@@ -19,7 +19,7 @@ import sys
 import websockets
 
 HOST     = sys.argv[1] if len(sys.argv) > 1 else "can-gw.local"
-WS_URL   = f"ws://{HOST}:80"
+WS_URL   = f"ws://{HOST}:8080"
 MOTOR_ID = 0x001
 INTERVAL = 2.0
 
@@ -62,7 +62,6 @@ async def main():
     except OSError as e:
         print(f"\nCould not connect: {e}")
         print(f"Is the device on WiFi? Try: python3 {sys.argv[0]} <ip_address>")
-        sys.exit(1)
 
 if __name__ == "__main__":
     loop = asyncio.new_event_loop()
@@ -71,7 +70,7 @@ if __name__ == "__main__":
     loop.add_signal_handler(signal.SIGTERM, task.cancel)
     try:
         loop.run_until_complete(task)
-    except (KeyboardInterrupt, asyncio.CancelledError):
+    except (KeyboardInterrupt, asyncio.CancelledError, SystemExit):
         pass
     finally:
         loop.close()
